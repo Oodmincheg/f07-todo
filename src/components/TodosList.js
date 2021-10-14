@@ -15,22 +15,33 @@ export default function TodoList() {
   console.log('render todo');
 
   const [todos, setTodos] = useState([]);
+  const [todo, setTodo] = useState('');
   const [startDate, setStartDate] = useState(new Date());
+  // const [error, setError] = useState(null);
 
-  const inputRef = useRef(null);
   const priorityRef = useRef(null);
   const descRef = useRef(null);
 
   function addTodo() {
+    // if (inputRef.current.value.length === 0) {
+    //   setError('todo is required');
+    //   return;
+    // }
+    // if (inputRef.current.value.length < 6) {
+    //   setError('todo must be at least 6 chars');
+    //   return;
+    // }
+
     const newTodo = {
       id: uuid(),
-      title: inputRef.current.value,
+      title: todo,
       priority: priorityRef.current.value,
       description: descRef.current.value,
       date: startDate,
     };
+
     setTodos([...todos, newTodo]);
-    inputRef.current.value = '';
+    setTodo('');
     priorityRef.current.value = PRIORITY_VALUES.HIGH;
     descRef.current.value = '';
   }
@@ -40,9 +51,23 @@ export default function TodoList() {
     setTodos(newTodos);
   }
 
+  function handleTodoInput(event) {
+    setTodo(event.target.value);
+    // if (todo.length < 6) {
+    //   setError('todo must be at least 6 chars');
+    // } else {
+    //   setError(null);
+    // }
+  }
   return (
     <>
-      <input ref={inputRef} placeholder="Enter your todo" />
+      <input
+        // style={error ? { border: '1px solid red' } : {}}
+        onChange={handleTodoInput}
+        placeholder="Enter your todo"
+        value={todo}
+      />
+      {/* {Boolean(error) ? <div>{error}</div> : null} */}
       <br />
       <select ref={priorityRef}>
         <option value={PRIORITY_VALUES.HIGH}>High</option>
