@@ -1,4 +1,4 @@
-import React, { useState, useRef, Fragment } from 'react';
+import React, { useState, useRef, useReducer } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import TodoItem from './TodoItem';
@@ -11,16 +11,40 @@ const PRIORITY_VALUES = {
   LOW: 'low',
 };
 
+//function that return new state
+// action {type, payload}
+// reducer(currentState, {type, paylod})
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'updateTodo':
+      return { ...state, todo: action.payload };
+    case 'updateTodos':
+      return { ...state, todos: action.payload };
+    case 'addNewTodo':
+      return { ...state, todos: [...state.todos, action.payload] };
+    case 'updateStartDate':
+      return { ...state, startDate: action.payload };
+    case 'updatePriority':
+      return { ...state, priority: action.payload };
+    case 'updateDescription':
+      return { ...state, description: action.payload };
+    default:
+      return state;
+  }
+}
+
 export default function TodoList() {
   console.log('render todo');
+  const [number, setNumber] = useState();
 
-  const [todos, setTodos] = useState([]);
-  const [todo, setTodo] = useState('');
-  const [startDate, setStartDate] = useState(new Date());
-  // const [error, setError] = useState(null);
-
-  const priorityRef = useRef(null);
-  const descRef = useRef(null);
+  const [state, dispatch] = useReducer(reducer, {
+    todo: '',
+    todos: [],
+    startDate: new Date(),
+    priority: '',
+    description: '',
+  });
 
   function addTodo() {
     // if (inputRef.current.value.length === 0) {
@@ -34,56 +58,72 @@ export default function TodoList() {
 
     const newTodo = {
       id: uuid(),
-      title: todo,
-      priority: priorityRef.current.value,
-      description: descRef.current.value,
-      date: startDate,
+      title: state.todo,
+      priority: state.priority,
+      description: state.description,
+      date: state.startDate,
     };
 
-    setTodos([...todos, newTodo]);
-    setTodo('');
-    priorityRef.current.value = PRIORITY_VALUES.HIGH;
-    descRef.current.value = '';
+    dispatch({ type: 'addNewTodo', payload: newTodo });
+    dispatch({ type: 'updateTodo', payload: '' });
+    dispatch({ type: 'updatePriority', payload: PRIORITY_VALUES.HIGH });
+    dispatch({ type: 'updateDescription', payload: '' });
   }
 
   function deleteTodo(idToDelete) {
-    const newTodos = todos.filter((todo) => todo.id !== idToDelete);
-    setTodos(newTodos);
+    const newTodos = state.todos.filter((todo) => todo.id !== idToDelete);
+    dispatch({ type: 'updateTodos', payload: newTodos });
   }
 
-  function handleTodoInput(event) {
-    setTodo(event.target.value);
-    // if (todo.length < 6) {
-    //   setError('todo must be at least 6 chars');
-    // } else {
-    //   setError(null);
-    // }
-  }
+  // function handleTodoInput(event) {
+  //   disp(event.target.value);
+  // if (todo.length < 6) {
+  //   setError('todo must be at least 6 chars');
+  // } else {
+  //   setError(null);
+  // }
+  // }
+
   return (
     <>
       <input
         // style={error ? { border: '1px solid red' } : {}}
-        onChange={handleTodoInput}
+        onChange={(event) =>
+          dispatch({ type: 'updateTodo', payload: event.target.value })
+        }
         placeholder="Enter your todo"
-        value={todo}
+        value={state.todo}
       />
       {/* {Boolean(error) ? <div>{error}</div> : null} */}
       <br />
-      <select ref={priorityRef}>
+      <select
+        value={state.priority}
+        onChange={(event) =>
+          dispatch({ type: 'updatePriority', payload: event.target.value })
+        }
+      >
         <option value={PRIORITY_VALUES.HIGH}>High</option>
         <option value={PRIORITY_VALUES.MIDDLE}>Middle</option>
         <option value={PRIORITY_VALUES.LOW}>Low</option>
       </select>
       <br />
-      <textarea ref={descRef} placeholder="Enter your description"></textarea>
+      <textarea
+        value={state.description}
+        onChange={(event) =>
+          dispatch({ type: 'updateDescription', payload: event.target.value })
+        }
+        placeholder="Enter your description"
+      ></textarea>
       <br />
       <DatePicker
-        selected={startDate}
-        onChange={(date) => setStartDate(date)}
+        selected={state.startDate}
+        onChange={(date) =>
+          dispatch({ type: 'updateStartDate', payload: date })
+        }
       />
       <br />
       <button onClick={addTodo}>Add</button>
-      {todos.map((todo) => {
+      {state.todos.map((todo) => {
         return <TodoItem key={todo.id} todo={todo} deleteTodo={deleteTodo} />;
       })}
     </>
