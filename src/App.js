@@ -1,7 +1,14 @@
+import React, { createContext } from 'react';
 import TodoList from './components/TodosList';
 
+export const Context = createContext({ defalut: 'default' });
+
 function App() {
-  return <TodoList />;
+  return (
+    <Context.Provider value={{ hello: 'hello' }}>
+      <TodoList />
+    </Context.Provider>
+  );
 }
 
 export default App;

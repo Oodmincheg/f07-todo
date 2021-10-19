@@ -1,6 +1,9 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useContext } from 'react';
+import { Context } from '../App';
 
 export default function TodoItem({ todo, deleteTodo }) {
+  const value = useContext(Context);
+  console.log('value ===> ', value);
   return (
     <Fragment>
       <div>TODO: {todo.title}</div>

@@ -29,6 +29,14 @@ function reducer(state, action) {
       return { ...state, priority: action.payload };
     case 'updateDescription':
       return { ...state, description: action.payload };
+    case 'reset':
+      return {
+        ...state,
+        description: '',
+        priority: PRIORITY_VALUES.HIGH,
+        todo: '',
+      };
+
     default:
       return state;
   }
@@ -63,11 +71,11 @@ export default function TodoList() {
       description: state.description,
       date: state.startDate,
     };
-
     dispatch({ type: 'addNewTodo', payload: newTodo });
-    dispatch({ type: 'updateTodo', payload: '' });
-    dispatch({ type: 'updatePriority', payload: PRIORITY_VALUES.HIGH });
-    dispatch({ type: 'updateDescription', payload: '' });
+    dispatch({ type: 'reset' });
+    // dispatch({ type: 'updateTodo', payload: '' });
+    // dispatch({ type: 'updatePriority', payload: PRIORITY_VALUES.HIGH });
+    // dispatch({ type: 'updateDescription', payload: '' });
   }
 
   function deleteTodo(idToDelete) {
