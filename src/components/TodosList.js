@@ -1,15 +1,11 @@
-import React, { useState, useRef, useReducer } from 'react';
-import { v4 as uuid } from 'uuid';
+import React, { useState, useContext, useReducer } from 'react';
 
 import TodoItem from './TodoItem';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
-const PRIORITY_VALUES = {
-  HIGH: 'high',
-  MIDDLE: 'middle',
-  LOW: 'low',
-};
+import { EditModal } from './EditModal';
+import { Context } from '../App.js';
+import { PRIORITY_VALUES } from '../consts';
+import TodoForm from '../TodoForm/TodoForm';
 
 //function that return new state
 // action {type, payload}
@@ -43,8 +39,7 @@ function reducer(state, action) {
 }
 
 export default function TodoList() {
-  console.log('render todo');
-  const [number, setNumber] = useState();
+  const { editModalOpened } = useContext(Context);
 
   const [state, dispatch] = useReducer(reducer, {
     todo: '',
@@ -53,30 +48,6 @@ export default function TodoList() {
     priority: '',
     description: '',
   });
-
-  function addTodo() {
-    // if (inputRef.current.value.length === 0) {
-    //   setError('todo is required');
-    //   return;
-    // }
-    // if (inputRef.current.value.length < 6) {
-    //   setError('todo must be at least 6 chars');
-    //   return;
-    // }
-
-    const newTodo = {
-      id: uuid(),
-      title: state.todo,
-      priority: state.priority,
-      description: state.description,
-      date: state.startDate,
-    };
-    dispatch({ type: 'addNewTodo', payload: newTodo });
-    dispatch({ type: 'reset' });
-    // dispatch({ type: 'updateTodo', payload: '' });
-    // dispatch({ type: 'updatePriority', payload: PRIORITY_VALUES.HIGH });
-    // dispatch({ type: 'updateDescription', payload: '' });
-  }
 
   function deleteTodo(idToDelete) {
     const newTodos = state.todos.filter((todo) => todo.id !== idToDelete);
@@ -94,46 +65,11 @@ export default function TodoList() {
 
   return (
     <>
-      <input
-        // style={error ? { border: '1px solid red' } : {}}
-        onChange={(event) =>
-          dispatch({ type: 'updateTodo', payload: event.target.value })
-        }
-        placeholder="Enter your todo"
-        value={state.todo}
-      />
-      {/* {Boolean(error) ? <div>{error}</div> : null} */}
-      <br />
-      <select
-        value={state.priority}
-        onChange={(event) =>
-          dispatch({ type: 'updatePriority', payload: event.target.value })
-        }
-      >
-        <option value={PRIORITY_VALUES.HIGH}>High</option>
-        <option value={PRIORITY_VALUES.MIDDLE}>Middle</option>
-        <option value={PRIORITY_VALUES.LOW}>Low</option>
-      </select>
-      <br />
-      <textarea
-        value={state.description}
-        onChange={(event) =>
-          dispatch({ type: 'updateDescription', payload: event.target.value })
-        }
-        placeholder="Enter your description"
-      ></textarea>
-      <br />
-      <DatePicker
-        selected={state.startDate}
-        onChange={(date) =>
-          dispatch({ type: 'updateStartDate', payload: date })
-        }
-      />
-      <br />
-      <button onClick={addTodo}>Add</button>
+      <TodoForm state={state} dispatch={dispatch} />
       {state.todos.map((todo) => {
         return <TodoItem key={todo.id} todo={todo} deleteTodo={deleteTodo} />;
       })}
+      {editModalOpened ? <EditModal /> : null}
     </>
   );
 }

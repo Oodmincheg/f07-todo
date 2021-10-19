@@ -1,0 +1,9 @@
+.editModal {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  top: 10%;
+  left: 35%;
+  border: 1px solid blue;
+  background: #fff;
+}
