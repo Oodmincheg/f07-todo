@@ -1,4 +1,4 @@
-import React, { useState, useContext, useReducer } from 'react';
+import React, { useContext, useReducer } from 'react';
 
 import TodoItem from './TodoItem';
 import 'react-datepicker/dist/react-datepicker.css';
