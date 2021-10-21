@@ -1,11 +1,11 @@
-import React, { useContext, useReducer } from 'react';
-
+import React, { useReducer } from 'react';
+import { useSelector } from 'react-redux';
 import TodoItem from './TodoItem';
 import 'react-datepicker/dist/react-datepicker.css';
 import { EditModal } from './EditModal';
-import { Context } from '../App.js';
+
 import { PRIORITY_VALUES } from '../consts';
-import TodoForm from '../TodoForm/TodoForm';
+import TodoForm from './TodoForm/TodoForm';
 
 //function that return new state
 // action {type, payload}
@@ -39,7 +39,7 @@ function reducer(state, action) {
 }
 
 export default function TodoList() {
-  const { editModalOpened } = useContext(Context);
+  const { editModalOpened } = useSelector((state) => state);
 
   const [state, dispatch] = useReducer(reducer, {
     todo: '',

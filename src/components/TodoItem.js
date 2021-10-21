@@ -1,8 +1,8 @@
-import React, { Fragment, useContext } from 'react';
-import { Context } from '../App';
+import React, { Fragment } from 'react';
+import { useDispatch } from 'react-redux';
 
 export default function TodoItem({ todo, deleteTodo }) {
-  const { dispatch } = useContext(Context);
+  const dispatch = useDispatch();
 
   function openEditModal() {
     dispatch({ type: 'openModal', payload: todo.title });

@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import styles from './EditModal.module.css';
 
-import { Context } from '../../App';
-
 export default function EditModal() {
-  const { editedTodo, dispatch } = useContext(Context);
+  const editedTodo = useSelector((state) => state.editedTodo);
+  const dispatch = useDispatch();
 
   return (
     <div className={styles.editModal}>

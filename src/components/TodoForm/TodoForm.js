@@ -2,7 +2,7 @@ import React from 'react';
 import DatePicker from 'react-datepicker';
 import { v4 as uuid } from 'uuid';
 
-import { PRIORITY_VALUES } from '../consts';
+import { PRIORITY_VALUES } from '../../consts';
 
 export default function TodoForm({ state, dispatch }) {
   function addTodo(event) {
